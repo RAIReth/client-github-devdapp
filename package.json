@@ -26,6 +26,8 @@
     },
     "devDependencies": {
         "@types/glob": "8.1.0",
+        "@types/node": "^20.11.0",
+        "ts-node": "^10.9.2",
         "tsup": "8.3.5",
         "vitest": "^3.0.0"
     },
@@ -33,7 +35,8 @@
         "build": "tsup --format esm --dts",
         "dev": "tsup --format esm --dts --watch",
         "test": "vitest run",
-        "test:watch": "vitest"
+        "test:watch": "vitest",
+        "test:labels": "ts-node scripts/test-github-labels.ts"
     },
     "publishConfig": {
         "access": "public"

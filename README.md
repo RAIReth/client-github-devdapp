@@ -93,6 +93,50 @@ await client.createCommit(
 );
 ```
 
+## GitHub Label Management
+
+This client now supports comprehensive GitHub issue label management, allowing you to:
+
+- Create new labels in a repository
+- Get all labels for a repository
+- Add labels to issues
+- Remove specific labels from issues
+- Remove all labels from issues
+- Set labels for issues (replacing existing labels)
+
+### Example Usage
+
+```typescript
+// Initialize the GitHub client
+const runtime = new AgentRuntime();
+const githubClient = new GitHubClient(runtime);
+await githubClient.initialize();
+
+// Create a new label
+const newLabel = await githubClient.createLabel(
+    "enhancement",
+    "a2eeef",
+    "New feature or request"
+);
+
+// Get all repository labels
+const labels = await githubClient.getRepoLabels();
+
+// Label an issue
+await githubClient.labelIssue(123, ["enhancement", "bug"]);
+
+// Set labels for an issue (replacing existing labels)
+await githubClient.setIssueLabels(123, ["documentation"]);
+
+// Remove a specific label from an issue
+await githubClient.removeIssueLabel(123, "documentation");
+
+// Remove all labels from an issue
+await githubClient.removeIssueLabel(123);
+```
+
+For a complete example, see [src/examples/label-example.ts](src/examples/label-example.ts).
+
 ## API Reference
 
 ### GitHubClientInterface
@@ -106,6 +150,11 @@ await client.createCommit(
 - `createMemoriesFromFiles()`: Generate agent memories
 - `createPullRequest(title: string, branch: string, files: Array<{path: string, content: string}>, description?: string)`: Create PR
 - `createCommit(message: string, files: Array<{path: string, content: string}>)`: Direct commit
+- `labelIssue(issueNumber: number, labels: string[])`: Add labels to an issue
+- `removeIssueLabel(issueNumber: number, label?: string)`: Remove a label from an issue
+- `setIssueLabels(issueNumber: number, labels: string[])`: Set labels for an issue
+- `getRepoLabels()`: Get all labels for a repository
+- `createLabel(name: string, color: string, description?: string)`: Create a new label
 
 ## Scripts
 
