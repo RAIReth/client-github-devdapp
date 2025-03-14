@@ -14,6 +14,7 @@ This client leverages GitHub's REST API via the `@octokit/rest` library and incl
 - **Commit Operations**: Stage, commit, and push files with ease
 - **Knowledge Base Integration**: Convert repository content into agent memories
 - **Branch Management**: Flexible branch switching and creation
+- **Issue Label Management**: Create, apply, and manage GitHub issue labels
 
 ## Installation
 
@@ -136,6 +137,49 @@ await githubClient.removeIssueLabel(123);
 ```
 
 For a complete example, see [src/examples/label-example.ts](src/examples/label-example.ts).
+
+## GitHub Label Actions
+
+This client now includes a set of actions that can be used with Eliza agents to manage GitHub labels:
+
+| Action Name | Description |
+|-------------|-------------|
+| `GITHUB_CREATE_LABEL` | Creates a new label in the GitHub repository |
+| `GITHUB_LABEL_ISSUE` | Adds labels to a GitHub issue |
+| `GITHUB_SET_ISSUE_LABELS` | Sets (replaces) all labels on a GitHub issue |
+| `GITHUB_REMOVE_ISSUE_LABEL` | Removes a label from a GitHub issue |
+| `GITHUB_GET_REPO_LABELS` | Gets all labels for a GitHub repository |
+
+### Example Usage in Character Agent
+
+```json
+{
+  "user": "RAIRDevAssistant",
+  "content": {
+    "text": "I'll create a 'bug' label for your repository right away.",
+    "action": "GITHUB_CREATE_LABEL",
+    "state": {
+      "name": "bug",
+      "color": "d73a4a",
+      "description": "Something isn't working as expected"
+    }
+  }
+}
+```
+
+```json
+{
+  "user": "RAIRDevAssistant",
+  "content": {
+    "text": "I'll add the 'enhancement' label to issue #42 for you.",
+    "action": "GITHUB_LABEL_ISSUE",
+    "state": {
+      "issueNumber": 42,
+      "labels": ["enhancement"]
+    }
+  }
+}
+```
 
 ## API Reference
 

@@ -3,17 +3,26 @@
   "username": "RAIRDevAssistant",
   "modelProvider": "**deepseek**",
   "clients": [
-    "discord",
-    "github",
-    "direct"
+    "github"
   ],
   "plugins": [
-    "@elizaos/plugin-browser"
+    "@elizaos/plugin-browser",
+    "@elizaos/plugin-github"
   ],
   "settings": {
     "ragKnowledge": true,
     "secrets": {
-      "GITHUB_TOKEN": "your_github_token"
+      "GITHUB_API_TOKEN": "your_github_api_token",
+      "GITHUB_OWNER": "rairprotocol",
+      "GITHUB_REPO": "rair-dapp",
+      "GITHUB_BRANCH": "main",
+      "GITHUB_PATH": ""
+    },
+    "github": {
+      "owner": "rairprotocol",
+      "repo": "rair-dapp",
+      "branch": "main",
+      "additionalRepos": ["rairprotocol/dev-dapp-season1"]
     },
     "modelConfig": {
       "temperature": 0.7,
@@ -85,6 +94,60 @@
           "action": "PROVIDE_DEVDAPP_SUPPORT"
         }
       }
+    ],
+    [
+      {
+        "user": "{{user4}}",
+        "content": {
+          "text": "Can you create a 'bug' label for our repository?"
+        }
+      },
+      {
+        "user": "RAIRDevAssistant",
+        "content": {
+          "text": "I'll create a 'bug' label for your repository right away.",
+          "action": "GITHUB_CREATE_LABEL",
+          "state": {
+            "name": "bug",
+            "color": "d73a4a",
+            "description": "Something isn't working as expected"
+          }
+        }
+      }
+    ],
+    [
+      {
+        "user": "{{user5}}",
+        "content": {
+          "text": "Can you add the 'enhancement' label to issue #42?"
+        }
+      },
+      {
+        "user": "RAIRDevAssistant",
+        "content": {
+          "text": "I'll add the 'enhancement' label to issue #42 for you.",
+          "action": "GITHUB_LABEL_ISSUE",
+          "state": {
+            "issueNumber": 42,
+            "labels": ["enhancement"]
+          }
+        }
+      }
+    ],
+    [
+      {
+        "user": "{{user6}}",
+        "content": {
+          "text": "What labels do we have in our repository?"
+        }
+      },
+      {
+        "user": "RAIRDevAssistant",
+        "content": {
+          "text": "Let me check what labels are available in your repository.",
+          "action": "GITHUB_GET_REPO_LABELS"
+        }
+      }
     ]
   ],
   "postExamples": [
@@ -106,7 +169,9 @@
     "smart contracts",
     "decentralized applications",
     "docker",
-    "web3 infrastructure"
+    "web3 infrastructure",
+    "GitHub issue management",
+    "GitHub labels"
   ],
   "knowledge": [
     {

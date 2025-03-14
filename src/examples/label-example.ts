@@ -2,63 +2,92 @@ import { AgentRuntime } from "@elizaos/core";
 import { GitHubClient } from "../client";
 
 /**
- * Example demonstrating how to use the GitHub labeling functionality
+ * Example demonstrating GitHub label management functionality
  */
 async function runLabelExample() {
     try {
-        // Initialize the GitHub client
+        // Initialize runtime with required settings
         const runtime = new AgentRuntime();
+        runtime.setSetting("GITHUB_OWNER", "your-github-username");
+        runtime.setSetting("GITHUB_REPO", "your-repository-name");
+        runtime.setSetting("GITHUB_API_TOKEN", "your-github-token");
+        
+        console.log("Initializing GitHub client...");
         const githubClient = new GitHubClient(runtime);
         await githubClient.initialize();
-
-        console.log("GitHub client initialized successfully");
-
-        // Example 1: Get all repository labels
-        console.log("Fetching repository labels...");
+        
+        // Create new labels
+        console.log("\nCreating new labels...");
+        const bugLabel = await githubClient.createLabel(
+            "bug", 
+            "d73a4a", 
+            "Something isn't working as expected"
+        );
+        console.log(`Created label: ${bugLabel.name} with color #${bugLabel.color}`);
+        
+        const enhancementLabel = await githubClient.createLabel(
+            "enhancement", 
+            "a2eeef", 
+            "New feature or request"
+        );
+        console.log(`Created label: ${enhancementLabel.name} with color #${enhancementLabel.color}`);
+        
+        const documentationLabel = await githubClient.createLabel(
+            "documentation", 
+            "0075ca", 
+            "Improvements or additions to documentation"
+        );
+        console.log(`Created label: ${documentationLabel.name} with color #${documentationLabel.color}`);
+        
+        // Get all repository labels
+        console.log("\nFetching all repository labels...");
         const labels = await githubClient.getRepoLabels();
         console.log(`Found ${labels.length} labels in the repository:`);
         labels.forEach(label => {
-            console.log(`- ${label.name} (#${label.color}): ${label.description}`);
+            console.log(`- ${label.name} (${label.color})${label.description ? `: ${label.description}` : ''}`);
         });
-
-        // Example 2: Create a new label
-        console.log("\nCreating a new label...");
-        const newLabel = await githubClient.createLabel(
-            "enhancement",
-            "a2eeef",
-            "New feature or request"
-        );
-        console.log(`Created label: ${newLabel.name} (#${newLabel.color})`);
-
-        // Example 3: Label an issue
-        const issueNumber = 1; // Replace with an actual issue number
-        console.log(`\nLabeling issue #${issueNumber}...`);
-        const labeledIssue = await githubClient.labelIssue(issueNumber, ["enhancement", "bug"]);
-        console.log(`Issue #${issueNumber} labeled successfully`);
-
-        // Example 4: Set labels for an issue (replacing existing labels)
+        
+        // Label an issue (replace with a valid issue number in your repository)
+        const issueNumber = 1; // Example issue number
+        console.log(`\nAdding labels to issue #${issueNumber}...`);
+        await githubClient.labelIssue(issueNumber, ["bug", "documentation"]);
+        console.log(`Added 'bug' and 'documentation' labels to issue #${issueNumber}`);
+        
+        // Set labels for an issue (replacing existing labels)
         console.log(`\nSetting labels for issue #${issueNumber}...`);
-        const updatedIssue = await githubClient.setIssueLabels(issueNumber, ["documentation"]);
-        console.log(`Issue #${issueNumber} labels updated successfully`);
-
-        // Example 5: Remove a label from an issue
-        console.log(`\nRemoving 'documentation' label from issue #${issueNumber}...`);
-        await githubClient.removeIssueLabel(issueNumber, "documentation");
-        console.log(`Label removed from issue #${issueNumber} successfully`);
-
-        // Example 6: Remove all labels from an issue
+        await githubClient.setIssueLabels(issueNumber, ["enhancement"]);
+        console.log(`Set 'enhancement' label on issue #${issueNumber} (replacing previous labels)`);
+        
+        // Remove a specific label from an issue
+        console.log(`\nRemoving 'enhancement' label from issue #${issueNumber}...`);
+        await githubClient.removeIssueLabel(issueNumber, "enhancement");
+        console.log(`Removed 'enhancement' label from issue #${issueNumber}`);
+        
+        // Add multiple labels to an issue
+        console.log(`\nAdding multiple labels to issue #${issueNumber}...`);
+        await githubClient.labelIssue(issueNumber, ["bug", "documentation", "enhancement"]);
+        console.log(`Added multiple labels to issue #${issueNumber}`);
+        
+        // Remove all labels from an issue
         console.log(`\nRemoving all labels from issue #${issueNumber}...`);
         await githubClient.removeIssueLabel(issueNumber);
-        console.log(`All labels removed from issue #${issueNumber} successfully`);
-
+        console.log(`Removed all labels from issue #${issueNumber}`);
+        
+        console.log("\nLabel management example completed successfully!");
     } catch (error) {
-        console.error("Error:", error.message);
+        console.error("Error in label example:", error.message);
     }
 }
 
-// Run the example
-runLabelExample().then(() => {
-    console.log("Example completed");
-}).catch(error => {
-    console.error("Example failed:", error);
-}); 
+// Run the example if this file is executed directly
+// Using CommonJS check for Node.js environment
+// @ts-ignore
+if (typeof require !== 'undefined' && require.main === module) {
+    runLabelExample().catch(error => {
+        console.error("Unhandled error:", error);
+        // @ts-ignore
+        process.exit(1);
+    });
+}
+
+export { runLabelExample }; 

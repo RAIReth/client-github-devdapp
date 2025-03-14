@@ -1,4 +1,5 @@
 import { GitHubClientInterface } from "./client";
+import { githubLabelActions } from "./actions";
 
 /**
  * GitHub plugin providing access to GitHub repository operations including:
@@ -11,5 +12,6 @@ const githubPlugin = {
     name: "github",
     description: "GitHub client for repository operations and issue management",
     clients: [GitHubClientInterface],
+    actions: githubLabelActions,
 };
 export default githubPlugin;
